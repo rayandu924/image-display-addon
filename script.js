@@ -9,19 +9,12 @@ class ImageDisplayAddon {
         this.isProxyAttempt = false
         this.hasTriedProxy = false
         
-        // Default settings
+        // Default settings - simplified
         this.settings = {
-            imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-            altText: 'Display Image',
+            imageUrl: 'https://picsum.photos/400/300',
             borderRadius: 8,
-            borderWidth: 0,
-            borderColor: '#FFFFFF',
-            shadowBlur: 10,
-            shadowColor: '#000000', 
-            shadowOpacity: 30,
-            fitMode: 'cover',
-            enableHover: true,
-            hoverScale: 1.05
+            shadowColor: '#000000',
+            shadowBlur: 10
         }
         
         this.setupEventListeners()
@@ -53,7 +46,7 @@ class ImageDisplayAddon {
         Object.assign(this.settings, newSettings)
         
         // Update alt text
-        this.imageElement.alt = this.settings.altText
+        this.imageElement.alt = 'Display Image'
         
         // Update visual styles
         this.updateImageStyles()
@@ -92,24 +85,7 @@ class ImageDisplayAddon {
         }
     }
     
-    updateHoverStyles() {
-        // Create or update dynamic style element
-        let styleEl = document.getElementById('dynamic-hover-styles')
-        if (!styleEl) {
-            styleEl = document.createElement('style')
-            styleEl.id = 'dynamic-hover-styles'
-            document.head.appendChild(styleEl)
-        }
-        
-        const shadowRgba = this.hexToRgba(this.settings.shadowColor, (this.settings.shadowOpacity + 20) / 100)
-        
-        styleEl.textContent = `
-            #displayImage.hover-enabled:hover {
-                transform: scale(${this.settings.hoverScale}) !important;
-                box-shadow: 0 8px ${this.settings.shadowBlur + 15}px ${shadowRgba} !important;
-            }
-        `
-    }
+    // Removed hover functionality - keeping things simple
     
     loadImage() {
         if (!this.settings.imageUrl) {
@@ -135,7 +111,7 @@ class ImageDisplayAddon {
     }
     
     onImageLoad() {
-        console.log('✅ Image loaded successfully')
+        console.log('✅ Image loaded successfully:', this.settings.imageUrl)
         
         // Reset flags on successful load
         this.isProxyAttempt = false
@@ -146,10 +122,12 @@ class ImageDisplayAddon {
         // Apply styles and show image
         this.updateImageStyles()
         
-        // Smooth fade in
-        requestAnimationFrame(() => {
-            this.imageElement.classList.add('loaded')
-        })
+        // Force visibility and add loaded class
+        this.imageElement.style.opacity = '1'
+        this.imageElement.style.visibility = 'visible'
+        this.imageElement.classList.add('loaded')
+        
+        console.log('🎯 Image should now be visible with class:', this.imageElement.classList.toString())
     }
     
     onImageError() {
