@@ -10,7 +10,7 @@ A simple yet powerful image display addon for MyWallpaper. Show any image from a
 - **Hover Effects** - Optional scale and shadow animations
 - **Loading States** - Smooth loading spinner and error handling
 - **Responsive Design** - Adapts to container size automatically
-- **CORS Compatible** - Works with most image hosting services
+- **CORS Support** - Automatic proxy fallback for blocked images
 
 ## ⚙️ Configuration Options
 
@@ -38,14 +38,15 @@ A simple yet powerful image display addon for MyWallpaper. Show any image from a
 ## 🌐 Supported Image Sources
 
 ### ✅ Compatible Services
-- **Unsplash** - `https://images.unsplash.com/...`
+- **Picsum** - `https://picsum.photos/400/300` (random images)
 - **Imgur** - `https://i.imgur.com/...`
 - **GitHub** - `https://raw.githubusercontent.com/...`
-- **Direct URLs** - Any direct image link
+- **Direct URLs** - Most direct image links
+- **CORS-blocked** - Automatically tries proxy fallback
 
 ### 📝 URL Examples
 ```
-https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop
+https://picsum.photos/400/300
 https://i.imgur.com/abc123.jpg
 https://raw.githubusercontent.com/user/repo/main/image.png
 ```
@@ -74,8 +75,8 @@ https://raw.githubusercontent.com/user/repo/main/image.png
 
 ## 🔧 Technical Details
 
-- **CORS Handling** - Built-in cross-origin support
-- **Error Recovery** - Graceful handling of failed loads
+- **CORS Handling** - Automatic proxy fallback for blocked images
+- **Error Recovery** - Graceful handling of failed loads with retry
 - **Memory Efficient** - Single image element with dynamic updates
 - **Performance Optimized** - Hardware-accelerated transforms
 - **Accessibility** - Proper alt text and screen reader support

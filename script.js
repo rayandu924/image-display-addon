@@ -113,21 +113,9 @@ class ImageDisplayAddon {
         // Show loading state
         this.showLoading()
         
-        // Create new image to test loading
-        const testImg = new Image()
-        testImg.crossOrigin = 'anonymous' // For CORS compatibility
-        
-        testImg.onload = () => {
-            // Image loaded successfully, update main image
-            this.imageElement.src = this.settings.imageUrl
-        }
-        
-        testImg.onerror = () => {
-            this.onImageError()
-        }
-        
-        // Start loading
-        testImg.src = this.settings.imageUrl
+        // Load image directly without CORS precheck
+        this.imageElement.crossOrigin = null // Remove crossOrigin to avoid CORS preflight
+        this.imageElement.src = this.settings.imageUrl
         
         console.log('📸 Loading image:', this.settings.imageUrl)
     }
@@ -155,10 +143,26 @@ class ImageDisplayAddon {
     }
     
     onImageError() {
-        console.error('❌ Failed to load image:', this.settings.imageUrl)
+        console.warn('⚠️ Image load failed, trying fallback methods:', this.settings.imageUrl)
         
-        this.loadingSpinner.style.display = 'none'
-        this.showError('Failed to load image')
+        // Try loading with a proxy service for CORS-blocked images
+        this.tryProxyLoad()
+    }
+    
+    tryProxyLoad() {
+        // Try using a CORS proxy service
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(this.settings.imageUrl)}`
+        
+        console.log('🔄 Trying proxy load:', proxyUrl)
+        
+        this.imageElement.src = proxyUrl
+        
+        // If proxy also fails, show final error
+        this.imageElement.onerror = () => {
+            console.error('❌ Both direct and proxy load failed for:', this.settings.imageUrl)
+            this.loadingSpinner.style.display = 'none'
+            this.showError('Failed to load image - CORS blocked')
+        }
     }
     
     showError(message) {
