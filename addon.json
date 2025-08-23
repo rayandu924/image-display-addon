@@ -80,7 +80,7 @@
       "default": "cover"
     },
     "enableHover": {
-      "type": "checkbox",
+      "type": "boolean",
       "label": "Hover Effects",
       "description": "Enable hover animations and effects",
       "default": true
