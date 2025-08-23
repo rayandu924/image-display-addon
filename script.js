@@ -5,6 +5,10 @@ class ImageDisplayAddon {
         this.loadingSpinner = document.getElementById('loadingSpinner')
         this.errorMessage = document.getElementById('errorMessage')
         
+        // Flags for preventing infinite loops
+        this.isProxyAttempt = false
+        this.hasTriedProxy = false
+        
         // Default settings
         this.settings = {
             imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
@@ -34,7 +38,7 @@ class ImageDisplayAddon {
             }
         })
         
-        // Image load events
+        // Image load events (set once only)
         this.imageElement.addEventListener('load', () => this.onImageLoad())
         this.imageElement.addEventListener('error', () => this.onImageError())
         
@@ -56,6 +60,9 @@ class ImageDisplayAddon {
         
         // Reload image if URL changed
         if (oldUrl !== this.settings.imageUrl) {
+            // Reset flags for new image
+            this.isProxyAttempt = false
+            this.hasTriedProxy = false
             this.loadImage()
         }
     }
@@ -130,6 +137,9 @@ class ImageDisplayAddon {
     onImageLoad() {
         console.log('✅ Image loaded successfully')
         
+        // Reset flags on successful load
+        this.isProxyAttempt = false
+        
         this.loadingSpinner.style.display = 'none'
         this.errorMessage.classList.remove('show')
         
@@ -143,26 +153,40 @@ class ImageDisplayAddon {
     }
     
     onImageError() {
-        console.warn('⚠️ Image load failed, trying fallback methods:', this.settings.imageUrl)
+        // Prevent infinite loops
+        if (this.isProxyAttempt) {
+            console.error('❌ Both direct and proxy load failed for:', this.settings.imageUrl)
+            this.loadingSpinner.style.display = 'none'
+            this.showError('Failed to load image - CORS blocked')
+            return
+        }
         
-        // Try loading with a proxy service for CORS-blocked images
-        this.tryProxyLoad()
+        if (!this.hasTriedProxy) {
+            console.warn('⚠️ Image load failed, trying proxy fallback:', this.settings.imageUrl)
+            this.tryProxyLoad()
+        } else {
+            console.error('❌ Image load failed after all attempts:', this.settings.imageUrl)
+            this.loadingSpinner.style.display = 'none'
+            this.showError('Failed to load image')
+        }
     }
     
     tryProxyLoad() {
+        if (this.hasTriedProxy) {
+            console.warn('🚫 Proxy already attempted, stopping')
+            return
+        }
+        
+        // Mark that we're trying proxy and have tried it
+        this.isProxyAttempt = true
+        this.hasTriedProxy = true
+        
         // Try using a CORS proxy service
         const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(this.settings.imageUrl)}`
         
         console.log('🔄 Trying proxy load:', proxyUrl)
         
         this.imageElement.src = proxyUrl
-        
-        // If proxy also fails, show final error
-        this.imageElement.onerror = () => {
-            console.error('❌ Both direct and proxy load failed for:', this.settings.imageUrl)
-            this.loadingSpinner.style.display = 'none'
-            this.showError('Failed to load image - CORS blocked')
-        }
     }
     
     showError(message) {
