@@ -25,8 +25,8 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 1.2vmin;
+    box-shadow: 0 0.6vmin 1.5vmin rgba(0, 0, 0, 0.3);
     transition: opacity 0.3s ease-in-out;
     opacity: 0;
     display: block;
@@ -42,19 +42,19 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #6B7280;
-    font-size: 14px;
+    font-size: 2.4vmin;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1.6vmin;
 }
 
 .spinner::before {
     content: '';
-    width: 20px;
-    height: 20px;
-    border: 2px solid #E5E7EB;
-    border-top: 2px solid #3B82F6;
+    width: 3.2vmin;
+    height: 3.2vmin;
+    border: 0.32vmin solid #E5E7EB;
+    border-top: 0.32vmin solid #3B82F6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -72,22 +72,22 @@ html, body {
     text-align: center;
     color: #EF4444;
     background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 3.2vmin;
+    border-radius: 1.9vmin;
+    box-shadow: 0 0.64vmin 1.9vmin rgba(0, 0, 0, 0.1);
     display: none;
     flex-direction: column;
-    gap: 8px;
+    gap: 1.3vmin;
 }
 
 .error-message span {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 2.6vmin;
 }
 
 .error-message small {
     color: #6B7280;
-    font-size: 12px;
+    font-size: 1.9vmin;
 }
 
 .error-message.show {
@@ -130,18 +130,33 @@ html, body {
     }
 }
 
-/* Responsive behavior */
-@media (max-width: 480px) {
+/* Responsive adjustments using aspect ratio */
+@media (max-aspect-ratio: 1/1) {
     #displayImage {
-        border-radius: 6px;
+        border-radius: 0.8vmin;
     }
     
     .error-message {
-        margin: 20px;
-        font-size: 14px;
+        padding: 2.4vmin;
+        font-size: 2.2vmin;
     }
     
     .spinner {
-        font-size: 13px;
+        font-size: 2vmin;
+    }
+}
+
+@media (min-aspect-ratio: 3/1) {
+    #displayImage {
+        border-radius: 1.5vmin;
+    }
+    
+    .error-message {
+        padding: 3.8vmin;
+        font-size: 2.8vmin;
+    }
+    
+    .spinner {
+        font-size: 2.8vmin;
     }
 }
