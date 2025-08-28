@@ -1,8 +1,8 @@
 {
   "metadata": {
     "name": "Simple Image Display",
-    "version": "2.0.0",
-    "description": "Minimal image display addon - show any image from a URL with border radius and shadow",
+    "version": "3.0.0",
+    "description": "Minimal image display addon - show any image from a URL",
     "author": "MyWallpaper", 
     "icon": "🖼️"
   },
@@ -16,26 +16,11 @@
     "borderRadius": {
       "type": "range",
       "label": "Border Radius",
-      "description": "Roundness of image corners",
+      "description": "Roundness of image corners (px)",
       "min": 0,
       "max": 50,
       "step": 1,
-      "default": 8
-    },
-    "shadowColor": {
-      "type": "color", 
-      "label": "Shadow Color",
-      "description": "Color of the drop shadow",
-      "default": "#000000"
-    },
-    "shadowBlur": {
-      "type": "range",
-      "label": "Shadow Blur",
-      "description": "Softness of drop shadow",
-      "min": 0,
-      "max": 50,
-      "step": 1,
-      "default": 10
+      "default": 0
     }
   }
 }

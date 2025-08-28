@@ -25,46 +25,25 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 1.2vmin;
-    box-shadow: 0 0.6vmin 1.5vmin rgba(0, 0, 0, 0.3);
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease;
     opacity: 0;
-    display: block;
 }
 
 #displayImage.loaded {
     opacity: 1;
 }
 
-.spinner {
+#loadingSpinner {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #6B7280;
-    font-size: 2.4vmin;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 1.6vmin;
+    font-size: 14px;
+    display: none;
 }
 
-.spinner::before {
-    content: '';
-    width: 3.2vmin;
-    height: 3.2vmin;
-    border: 0.32vmin solid #E5E7EB;
-    border-top: 0.32vmin solid #3B82F6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.error-message {
+#errorMessage {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -72,91 +51,9 @@ html, body {
     text-align: center;
     color: #EF4444;
     background: rgba(255, 255, 255, 0.9);
-    padding: 3.2vmin;
-    border-radius: 1.9vmin;
-    box-shadow: 0 0.64vmin 1.9vmin rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: none;
-    flex-direction: column;
-    gap: 1.3vmin;
-}
-
-.error-message span {
-    font-weight: 600;
-    font-size: 2.6vmin;
-}
-
-.error-message small {
-    color: #6B7280;
-    font-size: 1.9vmin;
-}
-
-.error-message.show {
-    display: flex;
-}
-
-/* Fade in animation for smooth loading */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-/* Loading shimmer effect */
-.loading-shimmer {
-    background: linear-gradient(90deg, 
-        transparent 25%, 
-        rgba(255, 255, 255, 0.1) 50%, 
-        transparent 75%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-/* Responsive adjustments using aspect ratio */
-@media (max-aspect-ratio: 1/1) {
-    #displayImage {
-        border-radius: 0.8vmin;
-    }
-    
-    .error-message {
-        padding: 2.4vmin;
-        font-size: 2.2vmin;
-    }
-    
-    .spinner {
-        font-size: 2vmin;
-    }
-}
-
-@media (min-aspect-ratio: 3/1) {
-    #displayImage {
-        border-radius: 1.5vmin;
-    }
-    
-    .error-message {
-        padding: 3.8vmin;
-        font-size: 2.8vmin;
-    }
-    
-    .spinner {
-        font-size: 2.8vmin;
-    }
+    font-size: 14px;
 }

@@ -1,20 +1,14 @@
-// 🖼️ IMAGE DISPLAY ADDON - Simple image display with URL configuration
+// 🖼️ IMAGE DISPLAY ADDON - Simple and optimized
 class ImageDisplayAddon {
     constructor() {
         this.imageElement = document.getElementById('displayImage')
         this.loadingSpinner = document.getElementById('loadingSpinner')
         this.errorMessage = document.getElementById('errorMessage')
         
-        // Flags for preventing infinite loops
-        this.isProxyAttempt = false
-        this.hasTriedProxy = false
-        
-        // Default settings - simplified
+        // Settings
         this.settings = {
             imageUrl: 'https://picsum.photos/400/300',
-            borderRadius: 8,
-            shadowColor: '#000000',
-            shadowBlur: 10
+            borderRadius: 0
         }
         
         this.setupEventListeners()
@@ -31,12 +25,9 @@ class ImageDisplayAddon {
             }
         })
         
-        // Image load events (set once only)
+        // Image events
         this.imageElement.addEventListener('load', () => this.onImageLoad())
         this.imageElement.addEventListener('error', () => this.onImageError())
-        
-        // Window resize handling
-        window.addEventListener('resize', () => this.updateImageStyles())
     }
     
     updateSettings(newSettings) {
@@ -45,59 +36,26 @@ class ImageDisplayAddon {
         const oldUrl = this.settings.imageUrl
         Object.assign(this.settings, newSettings)
         
-        // Update alt text
-        this.imageElement.alt = 'Display Image'
-        
-        // Update visual styles
+        // Update styles
         this.updateImageStyles()
         
         // Reload image if URL changed
         if (oldUrl !== this.settings.imageUrl) {
-            // Reset flags for new image
-            this.isProxyAttempt = false
-            this.hasTriedProxy = false
             this.loadImage()
         }
     }
     
     updateImageStyles() {
-        const img = this.imageElement
-        const shadow = this.settings
-        
-        // Convert hex to rgba for shadow
-        const shadowRgba = this.hexToRgba(shadow.shadowColor, shadow.shadowOpacity / 100)
-        
-        // Apply styles
-        img.style.borderRadius = `${shadow.borderRadius}px`
-        img.style.border = `${shadow.borderWidth}px solid ${shadow.borderColor}`
-        img.style.boxShadow = `0 4px ${shadow.shadowBlur}px ${shadowRgba}`
-        img.style.objectFit = shadow.fitMode
-        
-        // Hover effects
-        if (shadow.enableHover) {
-            img.classList.add('hover-enabled')
-            img.style.setProperty('--hover-scale', shadow.hoverScale)
-            
-            // Update hover CSS dynamically
-            this.updateHoverStyles()
-        } else {
-            img.classList.remove('hover-enabled')
-        }
+        this.imageElement.style.borderRadius = `${this.settings.borderRadius}px`
     }
-    
-    // Removed hover functionality - keeping things simple
     
     loadImage() {
         if (!this.settings.imageUrl) {
-            this.showError('No image URL provided')
+            this.showError()
             return
         }
         
-        // Show loading state
         this.showLoading()
-        
-        // Load image directly without CORS precheck
-        this.imageElement.crossOrigin = null // Remove crossOrigin to avoid CORS preflight
         this.imageElement.src = this.settings.imageUrl
         
         console.log('📸 Loading image:', this.settings.imageUrl)
@@ -106,119 +64,36 @@ class ImageDisplayAddon {
     showLoading() {
         this.imageElement.style.opacity = '0'
         this.imageElement.classList.remove('loaded')
-        this.loadingSpinner.style.display = 'flex'
-        this.errorMessage.classList.remove('show')
+        this.loadingSpinner.style.display = 'block'
+        this.errorMessage.style.display = 'none'
     }
     
     onImageLoad() {
         console.log('✅ Image loaded successfully:', this.settings.imageUrl)
         
-        // Reset flags on successful load
-        this.isProxyAttempt = false
-        
         this.loadingSpinner.style.display = 'none'
-        this.errorMessage.classList.remove('show')
+        this.errorMessage.style.display = 'none'
         
-        // Apply styles and show image
         this.updateImageStyles()
-        
-        // Force visibility and add loaded class
-        this.imageElement.style.opacity = '1'
-        this.imageElement.style.visibility = 'visible'
         this.imageElement.classList.add('loaded')
         
-        console.log('🎯 Image should now be visible with class:', this.imageElement.classList.toString())
+        console.log('🎯 Image should now be visible with class: loaded')
     }
     
     onImageError() {
-        // Prevent infinite loops
-        if (this.isProxyAttempt) {
-            console.error('❌ Both direct and proxy load failed for:', this.settings.imageUrl)
-            this.loadingSpinner.style.display = 'none'
-            this.showError('Failed to load image - CORS blocked')
-            return
-        }
-        
-        if (!this.hasTriedProxy) {
-            console.warn('⚠️ Image load failed, trying proxy fallback:', this.settings.imageUrl)
-            this.tryProxyLoad()
-        } else {
-            console.error('❌ Image load failed after all attempts:', this.settings.imageUrl)
-            this.loadingSpinner.style.display = 'none'
-            this.showError('Failed to load image')
-        }
+        console.error('❌ Image load failed:', this.settings.imageUrl)
+        this.showError()
     }
     
-    tryProxyLoad() {
-        if (this.hasTriedProxy) {
-            console.warn('🚫 Proxy already attempted, stopping')
-            return
-        }
-        
-        // Mark that we're trying proxy and have tried it
-        this.isProxyAttempt = true
-        this.hasTriedProxy = true
-        
-        // Try using a CORS proxy service
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(this.settings.imageUrl)}`
-        
-        console.log('🔄 Trying proxy load:', proxyUrl)
-        
-        this.imageElement.src = proxyUrl
-    }
-    
-    showError(message) {
-        this.errorMessage.querySelector('span').textContent = `❌ ${message}`
-        this.errorMessage.classList.add('show')
+    showError() {
+        this.loadingSpinner.style.display = 'none'
+        this.errorMessage.style.display = 'block'
         this.imageElement.style.opacity = '0'
         this.imageElement.classList.remove('loaded')
-    }
-    
-    hexToRgba(hex, alpha) {
-        // Handle both #RGB and #RRGGBB formats
-        hex = hex.replace('#', '')
-        
-        let r, g, b
-        
-        if (hex.length === 3) {
-            r = parseInt(hex[0] + hex[0], 16)
-            g = parseInt(hex[1] + hex[1], 16) 
-            b = parseInt(hex[2] + hex[2], 16)
-        } else {
-            r = parseInt(hex.slice(0, 2), 16)
-            g = parseInt(hex.slice(2, 4), 16)
-            b = parseInt(hex.slice(4, 6), 16)
-        }
-        
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`
-    }
-    
-    // Utility method for testing different image URLs
-    testImage(url) {
-        console.log('🧪 Testing image URL:', url)
-        this.settings.imageUrl = url
-        this.loadImage()
     }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.imageDisplay = new ImageDisplayAddon()
-    
-    // Development helper - uncomment to test different images
-    /*
-    setTimeout(() => {
-        const testUrls = [
-            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&h=300&fit=crop'
-        ]
-        
-        let index = 0
-        setInterval(() => {
-            window.imageDisplay.testImage(testUrls[index])
-            index = (index + 1) % testUrls.length
-        }, 5000)
-    }, 2000)
-    */
 })
