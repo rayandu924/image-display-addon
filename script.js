@@ -11,6 +11,9 @@ class ImageDisplayAddon {
             borderRadius: 0
         }
         
+        // CORS fallback flag
+        this.hasTriedProxy = false
+        
         this.setupEventListeners()
         this.loadImage()
         
@@ -41,6 +44,7 @@ class ImageDisplayAddon {
         
         // Reload image if URL changed
         if (oldUrl !== this.settings.imageUrl) {
+            this.hasTriedProxy = false // Reset proxy flag for new URL
             this.loadImage()
         }
     }
@@ -56,6 +60,7 @@ class ImageDisplayAddon {
         }
         
         this.showLoading()
+        this.hasTriedProxy = false
         this.imageElement.src = this.settings.imageUrl
         
         console.log('📸 Loading image:', this.settings.imageUrl)
@@ -82,7 +87,24 @@ class ImageDisplayAddon {
     
     onImageError() {
         console.error('❌ Image load failed:', this.settings.imageUrl)
-        this.showError()
+        
+        // Try CORS proxy if we haven't tried it yet
+        if (!this.hasTriedProxy) {
+            console.log('🔄 Trying CORS proxy fallback...')
+            this.tryProxyLoad()
+        } else {
+            this.showError()
+        }
+    }
+    
+    tryProxyLoad() {
+        this.hasTriedProxy = true
+        
+        // Use a simple CORS proxy
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(this.settings.imageUrl)}`
+        console.log('🌐 Loading via proxy:', proxyUrl)
+        
+        this.imageElement.src = proxyUrl
     }
     
     showError() {
