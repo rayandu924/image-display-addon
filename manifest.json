@@ -1,11 +1,10 @@
 {
-  "metadata": {
-    "name": "Simple Image Display",
-    "version": "2.0.0",
-    "description": "Minimal image display addon - show any image from a URL with border radius and shadow",
-    "author": "MyWallpaper", 
-    "icon": "🖼️"
-  },
+  "name": "Simple Image Display",
+  "version": "2.0.0",
+  "description": "Minimal image display addon - show any image from a URL with border radius and shadow",
+  "type": "widget",
+  "author": "MyWallpaper",
+  "icon": "🖼️",
   "settings": {
     "imageUrl": {
       "type": "url",
@@ -23,7 +22,7 @@
       "default": 8
     },
     "shadowColor": {
-      "type": "color", 
+      "type": "color",
       "label": "Shadow Color",
       "description": "Color of the drop shadow",
       "default": "#000000"
