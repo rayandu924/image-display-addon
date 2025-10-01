@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "name": "Simple Image Display",
+    "version": "2.0.0",
+    "description": "Minimal image display addon - show any image from a URL with border radius and shadow",
+    "author": "MyWallpaper", 
+    "icon": "🖼️"
+  },
+  "settings": {
+    "imageUrl": {
+      "type": "url",
+      "label": "Image URL",
+      "description": "Direct link to the image you want to display",
+      "default": "https://picsum.photos/400/300"
+    },
+    "borderRadius": {
+      "type": "range",
+      "label": "Border Radius",
+      "description": "Roundness of image corners",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 8
+    },
+    "shadowColor": {
+      "type": "color", 
+      "label": "Shadow Color",
+      "description": "Color of the drop shadow",
+      "default": "#000000"
+    },
+    "shadowBlur": {
+      "type": "range",
+      "label": "Shadow Blur",
+      "description": "Softness of drop shadow",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 10
+    }
+  }
+}
